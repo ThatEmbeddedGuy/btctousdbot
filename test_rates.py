@@ -4,7 +4,7 @@ import rates
 class TestStringMethods(unittest.TestCase):
 
     def test_empty_symbol(self):
-        self.assertIsNone(rates.makeRequest(""))
+        self.assertIsNone(rates.make_request(""))
 
 
 

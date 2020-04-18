@@ -23,7 +23,7 @@ def start(update, context):
     update.message.reply_text('Hi! /get /help')
 
 def get(update, context):
-    data = str(rates.getRatesConcurrent())
+    data = str(rates.get_rates_concurrent())
     update.message.reply_text(data)
 
 def help(update, context):
