@@ -2,7 +2,7 @@ from telegram.ext import Updater, CommandHandler
 
 import rates, settings
 
-def get_kwargs(proxy):
+def get_request_kwargs(proxy):
    return{
       'proxy_url':proxy,
       # Optional, if you need authentication:
@@ -33,19 +33,25 @@ def register_handlers(dp):
     dp.add_handler(CommandHandler("get", get))
     dp.add_handler(CommandHandler("help", help))
 
-def main(currs = ["BTC","ETH"] ):
-    for proxy in settings.PROXIES_LIST:
-        try:
-           print(proxy)
-           updater = Updater(settings.TOKEN,request_kwargs=get_kwargs(proxy), use_context=True)
-           register_handlers(updater.dispatcher)
-           # Start the Bot
-           updater.start_polling()
-           updater.idle()
-        except:
-            print("connection error")
+def routine(requestargs = {}):
+    updater = Updater(settings.TOKEN,request_kwargs=requestargs, use_context=True)
+    register_handlers(updater.dispatcher)
+    # Start the Bot
+    updater.start_polling()
+    updater.idle()
 
-  
+
+def main(currs = ["BTC","ETH"] ):
+    #if proxy list is present, use proxies
+    if settings.PROXIES_LIST:
+         for proxy in settings.PROXIES_LIST:
+            try:
+               print(proxy)
+               routine(get_request_kwargs(proxy))
+            except:
+                print("connection error")
+    else:
+        routine()
 
 if __name__ == "__main__":
     # execute only if run as a script
