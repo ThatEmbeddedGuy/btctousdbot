@@ -22,7 +22,7 @@ def start(update, context):
     update.message.reply_text('Hi! \n /get \n /help')
 
 def get(update, context):
-    data = rates.get_rates_concurrent()
+    data = rates.get_rates_cached()
     output="List of currencies: \n"
     for currency, rate in data.items():
          if rate != None:
@@ -38,7 +38,6 @@ def register_handlers(dp):
     dp.add_handler(CommandHandler("help", help))
 
 def main(currs = ["BTC","ETH"] ):
-
     for proxy in settings.PROXIES_LIST:
         try:
            print(proxy)
