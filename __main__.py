@@ -6,18 +6,17 @@ from concurrent.futures import ThreadPoolExecutor
 
 import rates, settings
 
-
-#http://spys.one/proxys/DE/
-REQUEST_KWARGS={
-    'proxy_url':settings.PROXY_URL,
-    # Optional, if you need authentication:
-    'urllib3_proxy_kwargs': {
-        'assert_hostname': 'False',
-        'cert_reqs': 'CERT_NONE'
-        # 'username': 'user',
-        # 'password': 'password'
+def get_kwargs(proxy):
+   return{
+      'proxy_url':proxy,
+      # Optional, if you need authentication:
+      'urllib3_proxy_kwargs': {
+          'assert_hostname': 'False',
+          'cert_reqs': 'CERT_NONE'
+          # 'username': 'user',
+          # 'password': 'password'
+      }
     }
-}
 
 def start(update, context):
     update.message.reply_text('Hi! \n /get \n /help')
@@ -39,15 +38,18 @@ def register_handlers(dp):
     dp.add_handler(CommandHandler("help", help))
 
 def main(currs = ["BTC","ETH"] ):
-    updater = Updater(settings.TOKEN,request_kwargs=REQUEST_KWARGS, use_context=True)
 
-    # Get the dispatcher to register handlers
-    register_handlers(updater.dispatcher)
+    for proxy in settings.PROXIES_LIST:
+        try:
+           print(proxy)
+           updater = Updater(settings.TOKEN,request_kwargs=get_kwargs(proxy), use_context=True)
+           register_handlers(updater.dispatcher)
+           # Start the Bot
+           updater.start_polling()
+           updater.idle()
+        except:
+            print("connection error")
 
-    # Start the Bot
-    updater.start_polling()
-
-    updater.idle()
   
 
 if __name__ == "__main__":
