@@ -10,7 +10,10 @@ API_TYPES = {"price" : "/api/v3/avgPrice","time" : "/api/v3/time"}
 
 def get_rates_concurrent(currs = ["BTC","ETH"]):
     executor = ThreadPoolExecutor(max_workers=4)
-    currency_pairs =   [currency + USD for currency in currs ]
+    if isinstance(currs, str):
+       currency_pairs= currs + USD
+    else:
+      currency_pairs =   [currency + USD for currency in currs ]
     result =  zip(currency_pairs, executor.map(make_request, currency_pairs))
     return dict(result) 
 
