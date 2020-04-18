@@ -17,11 +17,11 @@ def get_request_kwargs(proxy):
     }
 
 
-def start(update, context):
+def handler_start(update, context):
     update.message.reply_text('Hi! \n /get \n /help')
 
 
-def get(update, context):
+def handler_get(update, context):
     data = rates.get_rates_cached()
     output = "List of currencies: \n"
     for currency, rate in data.items():
@@ -30,14 +30,14 @@ def get(update, context):
     update.message.reply_text(output)
 
 
-def help(update, context):
+def handler_help(update, context):
     update.message.reply_text('Hi! \n /get \n /help')
 
 
 def register_handlers(dp):
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("get", get))
-    dp.add_handler(CommandHandler("help", help))
+    dp.add_handler(CommandHandler("start", handler_start))
+    dp.add_handler(CommandHandler("get", handler_get))
+    dp.add_handler(CommandHandler("help", handler_help))
 
 
 def routine(requestargs={}):
