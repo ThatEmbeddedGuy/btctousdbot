@@ -9,7 +9,7 @@ import rates, settings
 
 #http://spys.one/proxys/DE/
 REQUEST_KWARGS={
-    'proxy_url':'socks5://148.251.234.93:1080/',
+    'proxy_url':settings.PROXY_URL,
     # Optional, if you need authentication:
     'urllib3_proxy_kwargs': {
         'assert_hostname': 'False',
@@ -29,18 +29,16 @@ def get(update, context):
 def help(update, context):
     update.message.reply_text('Hi! /get /help')
 
-
+def register_handlers(dp):
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("get", get))
+    dp.add_handler(CommandHandler("help", help))
 
 def main(currs = ["BTC","ETH"] ):
     updater = Updater(settings.TOKEN,request_kwargs=REQUEST_KWARGS, use_context=True)
 
     # Get the dispatcher to register handlers
-    dp = updater.dispatcher
-
-    # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("get", get))
-    dp.add_handler(CommandHandler("help", help))
+    register_handlers(updater.dispatcher)
 
     # Start the Bot
     updater.start_polling()
