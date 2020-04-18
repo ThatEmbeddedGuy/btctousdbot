@@ -1,39 +1,53 @@
-import http.client
-import requests 
-import json 
+import http.client, sys, getopt, requests, json
+import telegram
+from telegram.ext import Updater, InlineQueryHandler, CommandHandler
+from telegram.utils.helpers import escape_markdown
 from concurrent.futures import ThreadPoolExecutor
 
+import rates, settings
 
-USD = "USDT"
-URL = "https://api.binance.com"
-API_TYPES = {"price" : "/api/v3/avgPrice","time" : "/api/v3/time"}
+
+#http://spys.one/proxys/DE/
+REQUEST_KWARGS={
+    'proxy_url':'socks5://148.251.234.93:1080/',
+    # Optional, if you need authentication:
+    'urllib3_proxy_kwargs': {
+        'assert_hostname': 'False',
+        'cert_reqs': 'CERT_NONE'
+        # 'username': 'user',
+        # 'password': 'password'
+    }
+}
+
+def start(update, context):
+    update.message.reply_text('Hi! /get /help')
+
+def get(update, context):
+    data = str(rates.getRatesConcurrent())
+    update.message.reply_text(data)
+
+def help(update, context):
+    update.message.reply_text('Hi! /get /help')
+
+
 
 def main(currs = ["BTC","ETH"] ):
-    print(getRatesConcurrent(currs))
+    updater = Updater(settings.TOKEN,request_kwargs=REQUEST_KWARGS, use_context=True)
 
+    # Get the dispatcher to register handlers
+    dp = updater.dispatcher
 
-def getRatesConcurrent(currs = ["BTC","ETH"]):
-    executor = ThreadPoolExecutor(max_workers=4)
-    currency_pairs =   [currency + USD for currency in currs ]
-    result =  zip(currency_pairs, executor.map(request, currency_pairs))
-    return dict(result) 
+    # on different commands - answer in Telegram
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("get", get))
+    dp.add_handler(CommandHandler("help", help))
 
-def getRates(currs = ["BTC","ETH"]):
-    currency_pairs =   [currency + USD for currency in currs ]
-    results = [ {symbol:request(symbol)} for symbol in currency_pairs]
-    return results 
+    # Start the Bot
+    updater.start_polling()
 
-def request(symbol):
-    try:
-      params = {"symbol":symbol }
-      r = requests.get(url = URL+API_TYPES["price"] , params=params) 
-      return  json.loads(r.content)["price"]
-    except:
-      return None
+    updater.idle()
   
 
 if __name__ == "__main__":
     # execute only if run as a script
-    print("exec start")
     main()
-    print("exec stop")
