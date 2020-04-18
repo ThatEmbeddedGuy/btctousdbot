@@ -20,14 +20,18 @@ REQUEST_KWARGS={
 }
 
 def start(update, context):
-    update.message.reply_text('Hi! /get /help')
+    update.message.reply_text('Hi! \n /get \n /help')
 
 def get(update, context):
-    data = str(rates.get_rates_concurrent())
-    update.message.reply_text(data)
+    data = rates.get_rates_concurrent()
+    output="List of currencies: \n"
+    for currency, rate in data.items():
+         if rate != None:
+           output+=("curency: %s rate: %s \n" %(currency,rate))
+    update.message.reply_text(output)
 
 def help(update, context):
-    update.message.reply_text('Hi! /get /help')
+    update.message.reply_text('Hi! \n /get \n /help')
 
 def register_handlers(dp):
     dp.add_handler(CommandHandler("start", start))
