@@ -1,7 +1,4 @@
-import http.client, sys, getopt, requests, json
-import telegram
 from telegram.ext import Updater, CommandHandler
-from concurrent.futures import ThreadPoolExecutor
 
 import rates, settings
 
