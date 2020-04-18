@@ -27,7 +27,7 @@ def get(update, context):
     output="List of currencies: \n"
     for currency, rate in data.items():
          if rate != None:
-           output+=("curency: %s rate: %s \n" %(currency,rate))
+           output+=("currency: %s rate: %s \n" %(currency,rate))
     update.message.reply_text(output)
 
 def help(update, context):
